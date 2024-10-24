@@ -42,6 +42,14 @@ def Yline():
     cords = (CenterOfWindow()[0],0,1,500)
     pygame.draw.rect(window,color,cords)
 
+def tanjant():
+    color = (150,150,150)
+    pygame.draw.line(window,color,(450,0),(450,500))
+
+def cotanjant():
+    color = (150,150,150)
+    pygame.draw.line(window,color,(0,50),(500,50))
+
 #taylor yöntemi
 def sin(X):
     # terim sayısı için X/10 <= 7 7 terim kullan x/10 > 7 x/10 terim kullan (sadece int)
@@ -115,6 +123,8 @@ def main():
     init()
     Xline()
     Yline()
+    tanjant()
+    cotanjant()
     Cycle()
     loop()
 
@@ -139,6 +149,8 @@ def loop():
         window.fill((255,255,255))
         Xline()
         Yline()
+        tanjant()
+        cotanjant()
         resetCycle()
 
         m = pygame.mouse.get_pos()
@@ -152,6 +164,16 @@ def loop():
                 degree = 360 + degree
             
             pygame.draw.line(window,(0,0,250),(250,250),(250 + (float(cos(degree)*200)),(250 + (sin((degree)*-1)*200))))
+
+            if degree < 90 or degree > 270:
+                pygame.draw.line(window,(150,0,150),(250 + (float(cos(degree)*200)),(250 + (sin((degree)*-1)*200))),(450, 250 + ((sin(degree*-1)/float(cos(degree)))*200)))
+            else:
+                pygame.draw.line(window,(150,0,150),(250,250),(450,(250 + ((sin((degree)*-1)/float(cos(degree)))*200))))
+
+            if degree > 180 and degree < 360:
+                pygame.draw.line(window,(150,0,150),(250,250),(250+(200*(float(cos(degree))/sin(degree))),50))
+            else:
+                pygame.draw.line(window,(150,0,150),(250 + (float(cos(degree)*200)),(250 + (sin((degree)*-1)*200))),(250+(200*(float(cos(degree))/sin(degree))),50))
             # SinX doğru parçası
             pygame.draw.line(window,(0,250,0),((250+ (float(cos(degree)*200))),250),(250 + (float(cos(degree)*200)),(250 + (sin((degree)*-1)*200))))
             # CosX doğru parçası
@@ -167,19 +189,51 @@ def loop():
                 pygame.draw.line(window,(0,0,250),(250,250),(250,450))
 
         #textleri ayarla
-        Fcos: pygame.surface.Surface = font.render(f"cos{float(degree):.3f} = {float(cos(degree)):.3f}", True, (0, 0, 0))
-        Fsin: pygame.surface.Surface = font.render(f"sin{float(degree):.3f} = {float(sin(degree)):.3f}", True, (0, 0, 0))
+        Fcos: pygame.surface.Surface = font.render(f"cos{float(degree):.3f}", True, (0, 0, 0))
+        Fsin: pygame.surface.Surface = font.render(f"sin{float(degree):.3f}", True, (0, 0, 0))
+
+        Fsin2 : pygame.surface.Surface = font.render(f"sin{float(degree):.3f} = {float(sin(degree)):.3f}",True,(0,0,0))
+        Fcos2 : pygame.surface.Surface = font.render(f"cos{float(degree):.3f} = {float(cos(degree)):.3f}",True,(0,0,0))
+
+        Ftan : pygame.surface.Surface = font.render(f"tan{float(degree):.3f}",True,(0,0,0))
+        Fcot : pygame.surface.Surface = font.render(f"cot{float(degree):.3f}",True,(0,0,0))
         
+        if not (degree == 90 or degree == 270):
+            Ftan2 : pygame.surface.Surface = font.render(f"tan{float(degree):.3f} = {(sin(degree)/float(cos(degree))):.3f}",True,(0,0,0))
+        else:
+            Ftan2 : pygame.surface.Surface = font.render(f"tan{float(degree):.3f} = N/A",True,(0,0,0))
+            Fcot2 : pygame.surface.Surface = font.render(f"cot{float(degree):.3f} = {(float(cos(degree))/sin(degree)):.3f}",True,(0,0,0))
+        
+        if not ( degree == 0  or degree == 180 ):
+            Fcot2 : pygame.surface.Surface = font.render(f"cot{float(degree):.3f} = {(float(cos(degree))/sin(degree)):.3f}",True,(0,0,0))
+        else:
+            Fcot2 : pygame.surface.Surface = font.render(f"cot{float(degree):.3f} = N/A",True,(0,0,0))
+
         #cos doğrusunun uzunluğunu al / 2 yap (negatif veya pozitif olarak) sonra 250. pixele ekle (X konumu için)
             #cos doğrusunun uzunluğu 
         #sin doğrununun uzunluğunu al (negatif veya pozitif olarak) sonra 250. pixele ekle (Y konumu için)
         cosXY = ((250+ (float(cos(degree)*200)/2)),(250 + (sin((degree)*-1)*200)))
+        #tan değerinin olduğu yere yaz
+        tanXY = (450,250 + ((sin(degree*-1)/float(cos(degree)))*200))
         #sin doğrusunun uzunluğunu al / 2 yap (negatif veya pozitif olarak) sonra 250. pixele ekle (Y konumu için)
         #cos doğrununun uzunluğunu al (negatif veya pozitif olarak) sonra 250. pixele ekle (X konumu için)
         sinXY = ((250+ (float(cos(degree)*200))),(250 + (sin((degree)*-1)*200)/2))
+        #cot değerinin olduğu yere yaz
+        cotXY = ((250 + ((float(cos(degree))/sin(degree))*200)),50)
+
+        sin2XY = (0,460)
+        cos2XY = (0,470)
+        tan2XY = (0,480)
+        cot2XY = (0,490)
 
         window.blit(Fcos,cosXY)
         window.blit(Fsin,sinXY)
+        window.blit(Ftan,tanXY)
+        window.blit(Fcot,cotXY)
+        window.blit(Fcos2,cos2XY)
+        window.blit(Fsin2,sin2XY)
+        window.blit(Ftan2,tan2XY)
+        window.blit(Fcot2,cot2XY)
 
         # Ekranı güncelle
         pygame.display.flip()
